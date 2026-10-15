@@ -1,36 +1,123 @@
+
 #include <stdio.h>
 #define MAX 5
+
 char queue[MAX];
 int front = -1, rear = -1;
 
-void insert_element(char x) {
-    if ((rear + 1) % MAX == front) { printf("Overflow: queue is full.\n"); return; }
-    if (front == -1) front = rear = 0; else rear = (rear + 1) % MAX;
-    queue[rear] = x; printf("Inserted %c\n", x);
+// Insertion
+void enqueue(char value)
+{
+    if ((rear + 1) % MAX == front)
+    {
+        printf("Queue Overflow\n");
+        return;
+    }
+
+    if (front == -1)
+        front = 0;
+
+    rear = (rear + 1) % MAX;
+    queue[rear] = value;
+
+    printf("%c inserted\n", value);
 }
-void delete_element(void) {
-    if (front == -1) { printf("Underflow: queue is empty.\n"); return; }
-    printf("Deleted %c\n", queue[front]);
-    if (front == rear) front = rear = -1; else front = (front + 1) % MAX;
+
+// Deletion
+void dequeue()
+{
+    char value;
+
+    if (front == -1)
+    {
+        printf("Queue Underflow\n");
+        return;
+    }
+
+    value = queue[front];
+
+    if (front == rear)
+    {
+        front = -1;
+        rear = -1;
+    }
+    else
+    {
+        front = (front + 1) % MAX;
+    }
+
+    printf("%c deleted\n", value);
 }
-void display(void) {
-    if (front == -1) { printf("Queue is empty.\n"); return; }
-    printf("Queue: "); int i = front;
-    while (1) { printf("%c ", queue[i]); if (i == rear) break; i = (i + 1) % MAX; }
-    printf("\n");
+
+// Display
+void display()
+{
+    int i;
+
+    if (front == -1)
+    {
+        printf("Queue is Empty\n");
+        return;
+    }
+
+    printf("Circular Queue: ");
+
+    for (i = front; i != rear; i = (i + 1) % MAX)
+        printf("%c ", queue[i]);
+
+    printf("%c\n", queue[rear]);
 }
-int main(void) {
-    int choice; char x;
-    do {
-        printf("\n1.Insert 2.Delete 3.Display 4.Exit\nChoice: ");
-        if (scanf("%d", &choice) != 1) return 1;
-        switch (choice) {
-            case 1: printf("Character: "); scanf(" %c", &x); insert_element(x); break;
-            case 2: delete_element(); break;
-            case 3: display(); break;
-            case 4: printf("Exiting.\n"); break;
-            default: printf("Invalid choice.\n");
+
+// Main function
+int main()
+{
+    int choice;
+    char value;
+
+    while (1)
+    {
+        printf("\n--- Circular Queue ---\n");
+        printf("1. Insert an Element\n");
+        printf("2. Delete an Element\n");
+        printf("3. Demonstrate Overflow/Underflow\n");
+        printf("4. Display Queue\n");
+        printf("5. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                printf("Enter character: ");
+                scanf(" %c", &value);
+                enqueue(value);
+                break;
+
+            case 2:
+                dequeue();
+                break;
+
+            case 3:
+                if ((rear + 1) % MAX == front)
+                    printf("Queue Overflow\n");
+                else if (front == -1)
+                    printf("Queue Underflow: Queue is Empty\n");
+                else
+                    printf("Queue is neither Full nor Empty\n");
+                break;
+
+            case 4:
+                display();
+                break;
+
+            case 5:
+                return 0;
+
+            default:
+                printf("Invalid choice\n");
         }
-    } while (choice != 4);
+    }
+
     return 0;
 }
